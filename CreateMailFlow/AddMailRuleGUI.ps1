@@ -30,126 +30,81 @@ function SearchUser($val) {
     }
 }
 
-<#
-$FromUser = SearchUser("'From' User: ")
-If ($FromUser -ne 1) {
-    Write-Host "Function return: User found"
-} else {
-    Write-Host "Function return: User not found"
-    
-    $msg = 'Try again? [Y/N]'
-    $response = Read-Host -Prompt $msg
-    if ($response -eq 'y') {
-        $FromUser = SearchUser("'From' User: ")
-
-        If ($FromUser -ne 1) {
-            Write-Host "Function return: User found"
-        } else {
-            Write-Host "Function return: User not found"
-            throw 'User not found. Code 2. Exiting..'
-        }
-    }
-
-}
-
-
-$ToUser = SearchUser("'To' User: ")
-If ($ToUser -ne 1) {
-    Write-Host "Function return: User found"
-} else {
-    Write-Host "Function return: User not found"
-    
-    $msg = 'Try again? [Y/N]'
-    $response = Read-Host -Prompt $msg
-    if ($response -eq 'y') {
-        $ToUser = SearchUser("'To' User: ")
-
-        If ($ToUser -ne 1) {
-            Write-Host "Function return: User found"
-        } else {
-            Write-Host "Function return: User not found"
-            throw 'User not found. Code 2. Exiting..'
-        }
-    }
-
-}
-#>
-
 
 # Main Form
 $mainForm = New-Object System.Windows.Forms.Form
-$font = New-Object System.Drawing.Font(ìConsolasî, 13)
-$mainForm.Text = î Pick Time Frameî
+$font = New-Object System.Drawing.Font(‚ÄúConsolas‚Äù, 13)
+$mainForm.Text = ‚Äù Pick Time Frame‚Äù
 $mainForm.Font = $font
-$mainForm.ForeColor = ìWhiteî
-$mainForm.BackColor = ìDarkOliveGreenî
+$mainForm.ForeColor = ‚ÄúWhite‚Äù
+$mainForm.BackColor = ‚ÄúDarkOliveGreen‚Äù
 $mainForm.Width = 400
 $mainForm.Height = 300
 
 # MinDatePicker Label
 $mindatePickerLabel = New-Object System.Windows.Forms.Label
-$mindatePickerLabel.Text = ìStartDateî
-$mindatePickerLabel.Location = ì15, 10î
+$mindatePickerLabel.Text = ‚ÄúStartDate‚Äù
+$mindatePickerLabel.Location = ‚Äú15, 10‚Äù
 $mindatePickerLabel.Height = 22
 $mindatePickerLabel.Width = 90
 $mainForm.Controls.Add($minDatePickerLabel)
 
 # MaxDatePicker Label
 $maxdatePickerLabel = New-Object System.Windows.Forms.Label
-$maxdatePickerLabel.Text = ìStopDateî
-$maxdatePickerLabel.Location = ì15, 75î
+$maxdatePickerLabel.Text = ‚ÄúStopDate‚Äù
+$maxdatePickerLabel.Location = ‚Äú15, 75‚Äù
 $maxdatePickerLabel.Height = 22
 $maxdatePickerLabel.Width = 90
 $mainForm.Controls.Add($maxDatePickerLabel)
 
 # MinTimePicker Label
 $minTimePickerLabel = New-Object System.Windows.Forms.Label
-$minTimePickerLabel.Text = ìmin-timeî
-$minTimePickerLabel.Location = ì15, 38î
+$minTimePickerLabel.Text = ‚Äúmin-time‚Äù
+$minTimePickerLabel.Location = ‚Äú15, 38‚Äù
 $minTimePickerLabel.Height = 22
 $minTimePickerLabel.Width = 90
 $mainForm.Controls.Add($minTimePickerLabel)
 
 # MaxTimePicker Label
 $maxTimePickerLabel = New-Object System.Windows.Forms.Label
-$maxTimePickerLabel.Text = ìmax-timeî
-$maxTimePickerLabel.Location = ì15, 100î
+$maxTimePickerLabel.Text = ‚Äúmax-time‚Äù
+$maxTimePickerLabel.Location = ‚Äú15, 100‚Äù
 $maxTimePickerLabel.Height = 22
 $maxTimePickerLabel.Width = 90
 $mainForm.Controls.Add($maxTimePickerLabel)
 
 # DatePicker
 $mindatePicker = New-Object System.Windows.Forms.DateTimePicker
-$mindatePicker.Location = ì110, 7î
-$mindatePicker.Width = ì150î
+$mindatePicker.Location = ‚Äú110, 7‚Äù
+$mindatePicker.Width = ‚Äú150‚Äù
 $mindatePicker.Format = [windows.forms.datetimepickerFormat]::custom
-$mindatePicker.CustomFormat = ìyyyy/MM/ddî
+$mindatePicker.CustomFormat = ‚Äúyyyy/MM/dd‚Äù
 $mainForm.Controls.Add($mindatePicker)
 
 # DatePicker
 $maxdatePicker = New-Object System.Windows.Forms.DateTimePicker
-$maxdatePicker.Location = ì110, 70î
-$maxdatePicker.Width = ì150î
+$maxdatePicker.Location = ‚Äú110, 70‚Äù
+$maxdatePicker.Width = ‚Äú150‚Äù
 $maxdatePicker.Format = [windows.forms.datetimepickerFormat]::custom
-$maxdatePicker.CustomFormat = ìyyyyy/MM/ddî
+$maxdatePicker.CustomFormat = ‚Äúyyyyy/MM/dd‚Äù
 $mainForm.Controls.Add($maxdatePicker)
 
 
 # MinTimePicker
 $minTimePicker = New-Object System.Windows.Forms.DateTimePicker
-$minTimePicker.Location = ì110, 35î
-$minTimePicker.Width = ì150î
+$minTimePicker.Location = ‚Äú110, 35‚Äù
+$minTimePicker.Width = ‚Äú150‚Äù
 $minTimePicker.Format = [windows.forms.datetimepickerFormat]::custom
-$minTimePicker.CustomFormat = ìHH:mmî
+$minTimePicker.CustomFormat = ‚ÄúHH:mm‚Äù
 $minTimePicker.ShowUpDown = $TRUE
 $mainForm.Controls.Add($minTimePicker)
 
 # MaxTimePicker
 $maxTimePicker = New-Object System.Windows.Forms.DateTimePicker
-$maxTimePicker.Location = ì110, 98î
-$maxTimePicker.Width = ì150î
+$maxTimePicker.Location = ‚Äú110, 98‚Äù
+$maxTimePicker.Width = ‚Äú150‚Äù
 $maxTimePicker.Format = [windows.forms.datetimepickerFormat]::custom
-$maxTimePicker.CustomFormat = ìHH:mmî
+$maxTimePicker.CustomFormat = ‚ÄúHH:mm‚Äù
 $maxTimePicker.ShowUpDown = $TRUE
 $mainForm.Controls.Add($maxTimePicker)
 
@@ -178,11 +133,10 @@ $checkbox2.add_CheckedChanged({
 $mainForm.Controls.Add($checkbox2);
 
 $textBox1 = New-Object System.Windows.Forms.TextBox
-$textBox1.Location = ì15, 185î
-$textBox1.Width = ì150î
+$textBox1.Location = ‚Äú15, 185‚Äù
+$textBox1.Width = ‚Äú150‚Äù
 $textBox1.Add_KeyDown({
     if ($_.KeyCode -eq "Enter") {
-        #logic
         $textBox1.Text | Out-Host
         $global:FromVal = SearchUser($textBox1.Text)
         $global:FromVal | fl
@@ -192,18 +146,17 @@ $textBox1.Add_KeyDown({
 $mainForm.Controls.Add($textBox1)
 
 $label1 = New-Object System.Windows.Forms.Label
-$label1.Text = ìFrom Userî
+$label1.Text = ‚ÄúFrom User‚Äù
 $label1.Font = New-Object System.Drawing.Font("Consolas",10)
-$label1.Location = ì170, 190î
-$label1.Width = ì250î
+$label1.Location = ‚Äú170, 190‚Äù
+$label1.Width = ‚Äú250‚Äù
 $mainForm.Controls.Add($label1)
 
 $textBox2 = New-Object System.Windows.Forms.TextBox
-$textBox2.Location = ì15, 210î
-$textBox2.Width = ì150î
+$textBox2.Location = ‚Äú15, 210‚Äù
+$textBox2.Width = ‚Äú150‚Äù
 $textBox2.Add_KeyDown({
     if ($_.KeyCode -eq "Enter") {
-        #logic
         $textBox2.Text | Out-Host
         $global:ToVal = SearchUser($textBox2.Text)
         $global:ToVal | fl
@@ -213,27 +166,24 @@ $textBox2.Add_KeyDown({
 $mainForm.Controls.Add($textBox2)
 
 $label2 = New-Object System.Windows.Forms.Label
-$label2.Text = ìTo User/Groupî
+$label2.Text = ‚ÄúTo User/Group‚Äù
 $label2.Font = New-Object System.Drawing.Font("Consolas",10)
-$label2.Location = ì170, 215î
-$label2.Width = ì250î
+$label2.Location = ‚Äú170, 215‚Äù
+$label2.Width = ‚Äú250‚Äù
 $mainForm.Controls.Add($label2)
 
 # OD Button
 $okButton = New-Object System.Windows.Forms.Button
-$okButton.Location = ì15, 150î
-$okButton.ForeColor = ìBlackî
-$okButton.BackColor = ìWhiteî
-$okButton.Text = ìOKî
-#$okButton.DialogResult = 'None'
+$okButton.Location = ‚Äú15, 150‚Äù
+$okButton.ForeColor = ‚ÄúBlack‚Äù
+$okButton.BackColor = ‚ÄúWhite‚Äù
+$okButton.Text = ‚ÄúOK‚Äù
 $okButton.add_Click({
     If ( ($global:FromVal) -and ($global:ToVal) ){
         $mainForm.DialogResult = [System.Windows.Forms.DialogResult]::OK
-        #$mainForm.AcceptButton = $okButton
         $mainForm.close()
     }
 })
-#$mainForm.AcceptButton = $okButton
 $mainForm.Controls.Add($okButton)
 
 
@@ -242,20 +192,6 @@ Write-Host "Result: $result "
 
 if ($result -eq [Windows.Forms.DialogResult]::OK) {
 
-<#
-    Write-Host "In: $InDate "
-    Write-Host "Out: $OutDate "
-
-    #Write-Host "FromUser: "
-    #Write-Host $global:FromVal
-    #Write-Host "ToUser: $ToUser"
-    #Write-Host $global:ToVal
-    Write-Host $checkbox1.Checked
-    Write-Host $checkbox2.Checked
-
-    $global:FromVal.DistinguishedName | fl
-    $global:ToVal.DistinguishedName | fl
-#>
     $FromUser = $global:FromVal
     $ToUser = $global:ToVal
 
@@ -271,9 +207,6 @@ if ($result -eq [Windows.Forms.DialogResult]::OK) {
     Write-Host "FromUser: $FromUser"
     Write-Host "ToUser: $ToUser"
 
-    #Write-Host "DN1: $FromUser.DistinguishedName "
-    #Write-Host "DN2: $ToUser.DistinguishedName "
-
     If ($ToUser.Surname) {
         $FromTo = $FromUser.Surname+" > "+$ToUser.Surname
     } ElseIf ($ToUser.Name) {
@@ -285,7 +218,6 @@ if ($result -eq [Windows.Forms.DialogResult]::OK) {
     }
 
     $comment = "Autocreated rule from script"
-#    If ( $ToUser.Surname ) {
         If ( $checkbox1.Checked ) {
             $ruleName = "BCC: "+$FromTo+" "+ $($mindatePicker.Text)+"-"+$($maxdatePicker.Text)
         } elseif ( $checkbox2.Checked ) {
@@ -293,15 +225,6 @@ if ($result -eq [Windows.Forms.DialogResult]::OK) {
         } else {
             $ruleName = "BCC: "+$FromTo
         }
-#    } elseif ( $ToUser.Name ) {
-#        If ( $checkbox1.Checked ) {
-#            $ruleName = "BCC: "+$FromUser.Surname+" > "+$ToUser.Name+" "+ $($mindatePicker.Text)+"-"+$($maxdatePicker.Text)
-#        } elseif ( $checkbox2.Checked ) {
-#            $ruleName = "QUIT: "+$FromUser.Surname+" > "+$ToUser.Name
-#        } else {
-#            $ruleName = "BCC: "+$FromUser.Surname+" > "+$ToUser.Name
-#        }
-#    }
 
 
     If ( $checkbox1.Checked ) {
@@ -309,7 +232,6 @@ if ($result -eq [Windows.Forms.DialogResult]::OK) {
     } else {
         New-TransportRule -BlindCopyTo $ToUser.DistinguishedName -Comments $comment -Name $ruleName -SentTo $FromUser.DistinguishedName
     }
-    #New-TransportRule -ActivationDate ($InDate) -ExpiryDate ($OutDate) -BlindCopyTo {CN=Anton Levon,OU=Administracija,OU=Vilnius_Sau,OU=LT,DC=nuggetlab,DC=local} -Comments Test12345 -Name Test12345 -SentTo {CN=Anton Levon,OU=Administracija,OU=Vilnius_Sau,OU=LT,DC=nuggetlab,DC=local}
 
     if( -not $? )
     {
