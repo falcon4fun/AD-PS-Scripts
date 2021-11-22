@@ -1,4 +1,5 @@
 # Create MailFlow rule to redirect messages from User to User/Group
+# Change Exchange server path inside New-PSSession
 
 ###########################################################
 Add-Type -AssemblyName System.Windows.Forms
@@ -195,7 +196,7 @@ if ($result -eq [Windows.Forms.DialogResult]::OK) {
     $FromUser = $global:FromVal
     $ToUser = $global:ToVal
 
-    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://Exchange1/PowerShell/ -Authentication Kerberos
+    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://ExchangeServer/PowerShell/ -Authentication Kerberos
     Import-PSSession $Session
 
     $InDate = [DateTime]"$($mindatePicker.Text) $($minTimePicker.Text)"
