@@ -7,17 +7,17 @@ Add-Type -AssemblyName System.Windows.Forms
 $global:FromVal = $global:ToVal = $InDate = $OutDate = $null
 
 function SearchUser($val) {
-    $Val = '*'+$Val+'*'
+    $Val = '*' + $Val + '*'
 
-    $UserList = Get-ADUser -Filter {name -like $Val} -Properties Name,Surname,DistinguishedName | Select-Object -Property Name,Surname,DistinguishedName
-    $GroupList = Get-ADGroup -filter {GroupCategory -eq 'Distribution' -And name -like $Val} | Select-Object -Property Name,Surname,DistinguishedName
+    $UserList = Get-ADUser -Filter { name -like $Val } -Properties Name, Surname, DistinguishedName | Select-Object -Property Name, Surname, DistinguishedName
+    $GroupList = Get-ADGroup -filter { GroupCategory -eq 'Distribution' -And name -like $Val } | Select-Object -Property Name, Surname, DistinguishedName
     $CombinedList = @()
     $CombinedList += $UserList
     $CombinedList += $GroupList
     $Users = $CombinedList | Out-GridView -Title "Select OU and Click OK" -OutputMode Single
     Write-Host $Users
-    $Users | ft
-    $Users | fl
+    $Users | Format-Table
+    $Users | Format-List
     Write-Host $Users.Name
     Write-Host $Users.Surname
     Write-Host $Users.DistinguishedName
@@ -110,45 +110,45 @@ $maxTimePicker.ShowUpDown = $TRUE
 $mainForm.Controls.Add($maxTimePicker)
 
 $checkbox1 = new-object System.Windows.Forms.checkbox
-$checkbox1.Location = new-object System.Drawing.Size(100,145)
-$checkbox1.Size = new-object System.Drawing.Size(250,20)
+$checkbox1.Location = new-object System.Drawing.Size(100, 145)
+$checkbox1.Size = new-object System.Drawing.Size(250, 20)
 $checkbox1.Text = "Enable/Disable"
 $checkbox1.Checked = $true
 $checkbox1.add_CheckedChanged({
-    if ($checkbox1.Checked){
-        $checkbox2.Checked = $false
-    }
-})
+        if ($checkbox1.Checked) {
+            $checkbox2.Checked = $false
+        }
+    })
 $mainForm.Controls.Add($checkbox1);
 
 $checkbox2 = new-object System.Windows.Forms.checkbox
-$checkbox2.Location = new-object System.Drawing.Size(100,165)
-$checkbox2.Size = new-object System.Drawing.Size(250,20)
+$checkbox2.Location = new-object System.Drawing.Size(100, 165)
+$checkbox2.Size = new-object System.Drawing.Size(250, 20)
 $checkbox2.Text = "QUIT?"
 $checkbox2.Checked = $false
 $checkbox2.add_CheckedChanged({
-    if ($checkbox2.Checked){
-        $checkbox1.Checked = $false
-    }
-})
+        if ($checkbox2.Checked) {
+            $checkbox1.Checked = $false
+        }
+    })
 $mainForm.Controls.Add($checkbox2);
 
 $textBox1 = New-Object System.Windows.Forms.TextBox
 $textBox1.Location = “15, 185”
 $textBox1.Width = “150”
 $textBox1.Add_KeyDown({
-    if ($_.KeyCode -eq "Enter") {
-        $textBox1.Text | Out-Host
-        $global:FromVal = SearchUser($textBox1.Text)
-        $global:FromVal | fl
-        $label1.Text = $global:FromVal.Name
-    }
-})
+        if ($_.KeyCode -eq "Enter") {
+            $textBox1.Text | Out-Host
+            $global:FromVal = SearchUser($textBox1.Text)
+            $global:FromVal | Format-List
+            $label1.Text = $global:FromVal.Name
+        }
+    })
 $mainForm.Controls.Add($textBox1)
 
 $label1 = New-Object System.Windows.Forms.Label
 $label1.Text = “From User”
-$label1.Font = New-Object System.Drawing.Font("Consolas",10)
+$label1.Font = New-Object System.Drawing.Font("Consolas", 10)
 $label1.Location = “170, 190”
 $label1.Width = “250”
 $mainForm.Controls.Add($label1)
@@ -157,18 +157,18 @@ $textBox2 = New-Object System.Windows.Forms.TextBox
 $textBox2.Location = “15, 210”
 $textBox2.Width = “150”
 $textBox2.Add_KeyDown({
-    if ($_.KeyCode -eq "Enter") {
-        $textBox2.Text | Out-Host
-        $global:ToVal = SearchUser($textBox2.Text)
-        $global:ToVal | fl
-        $label2.Text = $global:ToVal.Name
-    }
-})
+        if ($_.KeyCode -eq "Enter") {
+            $textBox2.Text | Out-Host
+            $global:ToVal = SearchUser($textBox2.Text)
+            $global:ToVal | Format-List
+            $label2.Text = $global:ToVal.Name
+        }
+    })
 $mainForm.Controls.Add($textBox2)
 
 $label2 = New-Object System.Windows.Forms.Label
 $label2.Text = “To User/Group”
-$label2.Font = New-Object System.Drawing.Font("Consolas",10)
+$label2.Font = New-Object System.Drawing.Font("Consolas", 10)
 $label2.Location = “170, 215”
 $label2.Width = “250”
 $mainForm.Controls.Add($label2)
@@ -180,11 +180,11 @@ $okButton.ForeColor = “Black”
 $okButton.BackColor = “White”
 $okButton.Text = “OK”
 $okButton.add_Click({
-    If ( ($global:FromVal) -and ($global:ToVal) ){
-        $mainForm.DialogResult = [System.Windows.Forms.DialogResult]::OK
-        $mainForm.close()
-    }
-})
+        If ( ($global:FromVal) -and ($global:ToVal) ) {
+            $mainForm.DialogResult = [System.Windows.Forms.DialogResult]::OK
+            $mainForm.close()
+        }
+    })
 $mainForm.Controls.Add($okButton)
 
 
@@ -209,9 +209,9 @@ if ($result -eq [Windows.Forms.DialogResult]::OK) {
     Write-Host "ToUser: $ToUser"
 
     If ($ToUser.Surname) {
-        $FromTo = $FromUser.Surname+" > "+$ToUser.Surname
+        $FromTo = $FromUser.Surname + " > " + $ToUser.Surname
     } ElseIf ($ToUser.Name) {
-        $FromTo = $FromUser.Surname+" > "+$ToUser.Name
+        $FromTo = $FromUser.Surname + " > " + $ToUser.Name
     }
 
     If ($FromTo.Length -gt 36) {
@@ -219,13 +219,13 @@ if ($result -eq [Windows.Forms.DialogResult]::OK) {
     }
 
     $comment = "Autocreated rule from script"
-        If ( $checkbox1.Checked ) {
-            $ruleName = "BCC: "+$FromTo+" "+ $($mindatePicker.Text)+"-"+$($maxdatePicker.Text)
-        } elseif ( $checkbox2.Checked ) {
-            $ruleName = "QUIT: "+$FromTo
-        } else {
-            $ruleName = "BCC: "+$FromTo
-        }
+    If ( $checkbox1.Checked ) {
+        $ruleName = "BCC: " + $FromTo + " " + $($mindatePicker.Text) + "-" + $($maxdatePicker.Text)
+    } elseif ( $checkbox2.Checked ) {
+        $ruleName = "QUIT: " + $FromTo
+    } else {
+        $ruleName = "BCC: " + $FromTo
+    }
 
 
     If ( $checkbox1.Checked ) {
@@ -234,10 +234,9 @@ if ($result -eq [Windows.Forms.DialogResult]::OK) {
         New-TransportRule -BlindCopyTo $ToUser.DistinguishedName -Comments $comment -Name $ruleName -SentTo $FromUser.DistinguishedName
     }
 
-    if( -not $? )
-    {
-        $Error | fl
-        [System.Windows.MessageBox]::Show($Error[0].Exception.Message,'Error',[System.Windows.MessageBoxButton]::OK,[System.Windows.MessageBoxImage]::Error)
+    if ( -not $? ) {
+        $Error | Format-List
+        [System.Windows.MessageBox]::Show($Error[0].Exception.Message, 'Error', [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
     }
 
     Remove-PSSession $Session

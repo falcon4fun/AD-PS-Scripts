@@ -24,35 +24,31 @@ function AddToGroups ($samAcc) {
 
     # If servers have not been selected write warning in host
     If ( !$ADGroups ) {
-            Write-Warning "Groups have not been selected"
+        Write-Warning "Groups have not been selected"
     } Else {
-            # Display server names and their IP addresses
-            Write-Warning "The following servers have been selected:"
+        # Display server names and their IP addresses
+        Write-Warning "The following servers have been selected:"
  
-            $ADGroups | ft
+        $ADGroups | Format-Table
  
-            # Confirm if you want to proceed
-            Write-Host -nonewline "Do you want to proceed? (Y/N): "
-            $Response = Read-Host
-            Write-Host " "
+        # Confirm if you want to proceed
+        Write-Host -nonewline "Do you want to proceed? (Y/N): "
+        $Response = Read-Host
+        Write-Host " "
  
-                # If response was different that Y script will end
-                If ( $Response -ne "Y" )
-                { 
-                    Write-Warning "Script ends"      
-                }
-                Else
-                {
-                    # Servers loop
-                    ForEach($ADGroup in $ADGroups.SamAccountName)
-                    {
-                        # Restart command
-                        Write-Warning "Selected $ADGroup :"
-                        $ADGroup | fl
-                        Add-ADGroupMember -Identity $ADGroup -Members $samAcc
-                    }
-                }
+        # If response was different that Y script will end
+        If ( $Response -ne "Y" ) {
+            Write-Warning "Script ends"      
+        } Else {
+            # Servers loop
+            ForEach ($ADGroup in $ADGroups.SamAccountName) {
+                # Restart command
+                Write-Warning "Selected $ADGroup :"
+                $ADGroup | Format-List
+                Add-ADGroupMember -Identity $ADGroup -Members $samAcc
+            }
         }
+    }
 }
 
 function CreateMailAD ($samAcc) {
@@ -69,7 +65,7 @@ function CreateMailAD ($samAcc) {
         $mailbox = (Get-Mailbox -Identity $samAcc).PrimarySmtpAddress
         Write-Host 'Check: Mailbox Created'
         Write-Host $mailbox
-#        Set-Clipboard -Value $mailbox
+        #        Set-Clipboard -Value $mailbox
     } else {
         Remove-PSSession $Session
         throw 'Error creating mailbox. Code 11. Exiting..'
@@ -81,7 +77,7 @@ function CreateMailAD ($samAcc) {
         $secondAddress = Read-Host "Enter second email"
         Write-Warning 'Second mail:'
         Write-Warning $secondAddress
-        Set-Mailbox -Identity $samAcc -EmailAddresses @{add="$secondAddress"}
+        Set-Mailbox -Identity $samAcc -EmailAddresses @{add = "$secondAddress" }
 
         $msg = 'Make it primary mail? [Y/N]'
         $response = Read-Host -Prompt $msg
@@ -106,7 +102,7 @@ function CreateNavAD ($samAcc) {
     $navuser = Get-NAVServerUser -ServerInstance Prod
 
     if (!($navuser.UserName -contains "$DomainNavName\$samAcc")) {
-#    if (!($navuser.UserPrincipalName -contains "$samAcc@$DomainNavName.local")) {
+        #    if (!($navuser.UserPrincipalName -contains "$samAcc@$DomainNavName.local")) {
         Write-Host 1
         New-NAVServerUser -ServerInstance Prod -WindowsAccount "$DomainNavName\$samAcc" -FullName "$fname $lname" -LicenseType Full -State Enabled
         New-NAVServerUserPermissionSet -PermissionSetId SUPER -CompanyName "$CompanyName" -ServerInstance Prod -WindowsAccount "$DomainNavName\$samAcc"
@@ -120,8 +116,8 @@ function CreateNavAD ($samAcc) {
 }
 
 function Remove-Diacritics {
-param ([String]$src = [String]::Empty)
-  $normalized = $src.Normalize( [Text.NormalizationForm]::FormD )
+    param ([String]$src = [String]::Empty)
+    $normalized = $src.Normalize( [Text.NormalizationForm]::FormD )
   ($normalized -replace '\p{M}', '')
 }
 
@@ -140,7 +136,7 @@ $name = Read-Host "Enter 'Name Surname'"
 
 #Convert tab to spaces
 $name = $name -replace '\t', '  '
-$nameArr = $name.Split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)
+$nameArr = $name.Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
 Write-Host $nameArr
 Write-Host $nameArr.Length
 
@@ -154,15 +150,15 @@ if ($nameArr.length -eq 2) {
     Write-Host "Length" $fname.Length+($lname.Length)
 
     if ( ($fname.Length + $lname.Length) -ge 20) { 
-       if ( ($lname.Length+2) -ge 20) {
+        if ( ($lname.Length + 2) -ge 20) {
             Write-Host 4
             throw 'Hule takaja faimilija bolshaja? Exiting.. Code 4' 
-            } else { 
-        Write-Host 1
-        $samAcc = [cultureinfo]::GetCultureInfo("en-US").TextInfo.ToTitleCase($fname.Substring(0,1)).Trim() + "." + [cultureinfo]::GetCultureInfo("en-US").TextInfo.ToTitleCase($lname).Trim()
+        } else { 
+            Write-Host 1
+            $samAcc = [cultureinfo]::GetCultureInfo("en-US").TextInfo.ToTitleCase($fname.Substring(0, 1)).Trim() + "." + [cultureinfo]::GetCultureInfo("en-US").TextInfo.ToTitleCase($lname).Trim()
         }
     } else {
-        if ( ($lname.Length+2) -gt 20) {
+        if ( ($lname.Length + 2) -gt 20) {
             Write-Host 3
             throw 'Hule takaja faimilija bolshaja? Exiting.. Code 3'
         } else {
@@ -177,22 +173,22 @@ if ($nameArr.length -eq 2) {
 $samAcc = Remove-Diacritics($samAcc)
 Write-Host($samAcc)
 
-$OUList = Get-ADOrganizationalUnit -SearchBase $SearchBase -Filter * -Properties Name,DistinguishedName | Select-Object -Property Name,DistinguishedName
+$OUList = Get-ADOrganizationalUnit -SearchBase $SearchBase -Filter * -Properties Name, DistinguishedName | Select-Object -Property Name, DistinguishedName
 $OU = $OUList | Out-GridView -Title "Select OU and Click OK" -OutputMode Single
 Write-Host $OU.DistinguishedName
 
 #Account will be created in the OU listed in the $OU variable in the CSV file; don’t forget to change the domain name in the"-UserPrincipalName" variable
 New-ADUser `
--SamAccountName $samAcc `
--UserPrincipalName "$samAcc@$DomainName" `
--Name "$fname $lname" `
--GivenName $fname `
--Surname $lname `
--Enabled $True `
--ChangePasswordAtLogon $False `
--DisplayName "$fname $lname" `
--Path $OU.DistinguishedName `
--AccountPassword (convertto-securestring $DefPass -AsPlainText -Force)
+    -SamAccountName $samAcc `
+    -UserPrincipalName "$samAcc@$DomainName" `
+    -Name "$fname $lname" `
+    -GivenName $fname `
+    -Surname $lname `
+    -Enabled $True `
+    -ChangePasswordAtLogon $False `
+    -DisplayName "$fname $lname" `
+    -Path $OU.DistinguishedName `
+    -AccountPassword (convertto-securestring $DefPass -AsPlainText -Force)
 
 if (Get-ADUser -Identity $samAcc) {
     Write-Host 'User Created'

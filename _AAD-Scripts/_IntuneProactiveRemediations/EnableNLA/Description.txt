@@ -1,0 +1,4 @@
+Enabling NLA option not worked from Intune Configuration Policies. 
+Trow licence error like it requires Enterprise edition which is not true according official documentation.
+
+This Remediation script bypasses it

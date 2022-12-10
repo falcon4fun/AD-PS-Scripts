@@ -5,17 +5,15 @@
 # Change MailParams. Use your SMTP server and your mails
 
 
-$servers=(Get-ADComputer -Filter 'operatingsystem -like "*server*"').Name
+$servers = (Get-ADComputer -Filter 'operatingsystem -like "*server*"').Name
 
 
 ### Get only DriveType 3 (Local Disks) foreach Server
-ForEach ($s in $servers)
- 
-{
+ForEach ($s in $servers) {
 
     Write-Host "Host: $s "
-    $Report=Get-WmiObject win32_logicaldisk -ComputerName $s -Filter "Drivetype=3" -ErrorAction SilentlyContinue -AsJob | Wait-Job -Timeout 5 | Receive-Job | Where-Object {($_.freespace/$_.size) -le '0.15'}
-    $View=($Report.DeviceID -join ",").Replace(":","")
+    $Report = Get-WmiObject win32_logicaldisk -ComputerName $s -Filter "Drivetype=3" -ErrorAction SilentlyContinue -AsJob | Wait-Job -Timeout 5 | Receive-Job | Where-Object { ($_.freespace / $_.size) -le '0.15' }
+    $View = ($Report.DeviceID -join ",").Replace(":", "")
 
 
     if ($Report) {
@@ -24,10 +22,10 @@ ForEach ($s in $servers)
         Write-Host "View: $View "
 
         ForEach ($r in $Report) {
-#            $r | fl
+            #$r | fl
             Write-Host "Disk: $r.DeviceID"
-            $FreeSizeMB = $([math]::floor($r.FreeSpace/1MB))
-            $DiskSizeMB = $([math]::floor($r.Size/1MB))
+            $FreeSizeMB = $([math]::floor($r.FreeSpace / 1MB))
+            $DiskSizeMB = $([math]::floor($r.Size / 1MB))
             Write-Host "DiskSize: $DiskSizeMB MB"
             Write-Host "FreeSize: $FreeSizeMB MB"
             $DeviceID = $r.DeviceID
@@ -39,14 +37,14 @@ ForEach ($s in $servers)
                 # Host $s, Disk $r.DeviceID, FreeSizeMB $([math]::floor($r.FreeSpace/1MB)), DiskSizeMB $([math]::floor($r.Size/1MB))
                 $subject = "[$s] Critical size on disk $DeviceID"
                 $msg = "Host: $s<br />Disk: $DeviceID<br />DiskSize: $DiskSizeMB MB<br />FreeSize: $FreeSizeMB MB<br />"
-                $subject | fl
-                $msg | fl
+                $subject | Format-List
+                $msg | Format-List
                 
                 $MailParams = @{
-                    "From" = "SpaceMonitor <SpaceMonitor@transimeksa.com>"
-                    "To" = "WhereToSendNoti@domain.com", "WhereToSendNoti2@domain.com"
-                    "Subject" = $subject
-                    "Body"    = $msg
+                    "From"       = "SpaceMonitor <SpaceMonitor@transimeksa.com>"
+                    "To"         = "WhereToSendNoti@domain.com", "WhereToSendNoti2@domain.com"
+                    "Subject"    = $subject
+                    "Body"       = $msg
                     "SmtpServer" = "<IP OF SMTP SERVER>"
                 }
     
@@ -58,14 +56,14 @@ ForEach ($s in $servers)
                 Write-Host "!!!!!<15GB !!!!!!! "
                 $subject = "[$s] Warning size on disk $DeviceID"
                 $msg = "Host: $s<br />Disk: $DeviceID<br />DiskSize: $DiskSizeMB MB<br />FreeSize: $FreeSizeMB MB<br />"
-                $subject | fl
-                $msg | fl
+                $subject | Format-List
+                $msg | Format-List
 
                 $MailParams = @{
-                    "From" = "SpaceMonitor <SpaceMonitor@domain.com>"
-                    "To" = "WhereToSendNoti@domain.com", "WhereToSendNoti2@domain.com"
-                    "Subject" = $subject
-                    "Body"    = $msg
+                    "From"       = "SpaceMonitor <SpaceMonitor@domain.com>"
+                    "To"         = "WhereToSendNoti@domain.com", "WhereToSendNoti2@domain.com"
+                    "Subject"    = $subject
+                    "Body"       = $msg
                     "SmtpServer" = "<IP OF SMTP SERVER>"
                 }
     
