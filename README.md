@@ -1,2 +1,2 @@
 # AD-PS-Scripts
-Some PowerShell scripts usefull for ActiveDirectory forest
+Some PowerShell scripts usefull for ActiveDirectory and AzureActiveDirectory
